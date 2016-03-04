@@ -49,13 +49,13 @@ public class XMLWriter {
 			// Category in news
 			appendToElement(doc, newsElement, "category", smmdoc.getCategory());
 			// Date in news
-			appendToElement(doc, newsElement, "date", smmdoc.getCreateDate());
+			appendToElement(doc, newsElement, "date", smmdoc.getDate());
 			// Update in news
-			//appendToElement(doc, newsElement, "update", smmdoc.getLastUpdate()); // Cant invoke getLastUpdate() ????
+			appendToElement(doc, newsElement, "update", smmdoc.getLastUpdate()); // Cant invoke getLastUpdate() ????
 			// Title in news
 			appendToElement(doc, newsElement, "title", smmdoc.getTitle());
 			// Likes in news
-			appendToElement(doc, newsElement, "like", Integer.toString(smmdoc.getLike()));
+			appendToElement(doc, newsElement, "like", smmdoc.getLike());
 			// Content in news
 			appendToElement(doc, newsElement, "content", smmdoc.getContent());
 			

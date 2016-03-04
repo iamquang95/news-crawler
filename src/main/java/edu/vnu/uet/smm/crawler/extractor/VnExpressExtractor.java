@@ -102,7 +102,6 @@ public class VnExpressExtractor implements Extractor {
 			String fmtdate = VnExpressExtractor.parseTime(date);
 			if (fmtdate == null)
 				return null;
-			smmdoc.setCreateDate(fmtdate);
 		}		
 
 		String id = extractId(doc.baseUri());
@@ -111,15 +110,12 @@ public class VnExpressExtractor implements Extractor {
 		String category = extractCategory(doc);
 
 		smmdoc.setId("vne_article" + id);
-		smmdoc.setParentid("vne_article" + id);
 		smmdoc.setLink(doc.baseUri());
 		smmdoc.setSource("VnExpress");
 		smmdoc.setSourceCategory("News");
-		smmdoc.setType("Article");
-		smmdoc.setOriginalDate(date);		
+		smmdoc.setType("Article");	
 		smmdoc.setCategory(category);
 		smmdoc.setTitle(title);
-		smmdoc.setSummary(summary);
 		smmdoc.setContent(content);
 
 		if (analysis) {
@@ -137,7 +133,6 @@ public class VnExpressExtractor implements Extractor {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			smmdoc.setContentWS(contentWS);
 			smmdoc.setContentPOS(contentPOS);
 		}
 
@@ -162,15 +157,12 @@ public class VnExpressExtractor implements Extractor {
 
 				SMMDocument smmcomment = new SMMDocument();
 				smmcomment.setId("vne_comment" + comment.get("comment_id").getAsString());
-				smmcomment.setParentid(smmdoc.getId());
 				smmcomment.setLink(smmdoc.getLink());
 				smmcomment.setSource("VnExpress");
 				smmcomment.setSourceCategory("News");
 				smmcomment.setType("Comment");
-				smmcomment.setOriginalDate(comment.get("time").getAsString());
 				smmcomment.setCategory(smmdoc.getCategory());
 				smmcomment.setContent(text);
-				smmcomment.setLike(comment.get("userlike").getAsInt());
 				smmcomment.setAuthor(comment.get("full_name").getAsString());
 
 				if (analysis) {
@@ -186,9 +178,7 @@ public class VnExpressExtractor implements Extractor {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					smmcomment.setContentWS(contentWS);
 					smmcomment.setContentPOS(contentPOS);
-					smmcomment.setCreateDate(JodaTimeParser.getDate(comment.get("creation_time").getAsLong()));
 				}
 				smmcomments.add(smmcomment);
 			}
