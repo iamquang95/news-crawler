@@ -1,0 +1,1 @@
+java -server -XX:+UseParallelGC -Xshare:auto -Dfile.encoding=UTF8 -Xms512m -Xmx1G -cp lib/* edu.vnu.uet.smm.crawler.VnExpressCrawler
