@@ -32,16 +32,16 @@ public class XMLWriter {
 	}
 	
 	public static void writeToFile(ArrayList<SMMDocument> smmdocs, String path){
+		String finalresult = "";
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			
-			// Root element <info>
-			Document doc = docBuilder.newDocument();
-			Element infoElement = doc.createElement("info");
-			doc.appendChild(infoElement);
-			
 			for (SMMDocument smmdoc : smmdocs) {
+				// Root element <info>
+				Document doc = docBuilder.newDocument();
+				Element infoElement = doc.createElement("info");
+				doc.appendChild(infoElement);
 				// News element
 				Element newsElement = doc.createElement("news");
 				infoElement.appendChild(newsElement);
@@ -53,23 +53,34 @@ public class XMLWriter {
 				// Date in news
 				appendToElement(doc, newsElement, "date", smmdoc.getDate());
 				// Update in news
-				appendToElement(doc, newsElement, "update", smmdoc.getLastUpdate()); // Cant invoke getLastUpdate() ????
+				appendToElement(doc, newsElement, "update", smmdoc.getLastUpdate()); 
 				// Title in news
 				appendToElement(doc, newsElement, "title", smmdoc.getTitle());
 				// Likes in news
 				appendToElement(doc, newsElement, "like", smmdoc.getLike());
 				// Content in news
 				appendToElement(doc, newsElement, "content", smmdoc.getContent());
+				
+				// Write to file
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+				DOMSource source = new DOMSource(doc);
+				StringWriter outWriter = new StringWriter();
+				StreamResult result = new StreamResult(outWriter);
+				transformer.transform(source, result);
+				StringBuffer sb = outWriter.getBuffer();
+				finalresult = finalresult + sb.toString();
 			}
-			
-			// Write to file
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(path));
-			transformer.transform(source, result);
+			try{
+				PrintWriter outputFile = new PrintWriter(path);
+				outputFile.print(finalresult);
+				outputFile.close();
+			} catch (Exception e ){
+				e.printStackTrace();
+			}
 			
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
