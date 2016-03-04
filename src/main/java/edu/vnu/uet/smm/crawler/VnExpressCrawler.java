@@ -37,15 +37,9 @@ public class VnExpressCrawler {
 		try{
 			Document doc = URLFetcher.fetchByJsoup(url, CRAWLER_TIMEOUT);
 			if (doc != null) {
-//				System.out.println(VnExpressExtractor.extractContent(doc));
-				SMMDocument smmdoc = VnExpressExtractor.extract(doc, false); // IS_ANALYSIS = False
-				System.out.println(smmdoc.getLink());
-//				System.out.println(smmdoc.getCategory());
-//				//System.out.println(smmdoc.getLastUpdate());
-//				System.out.println(smmdoc.getTitle());
-//				System.out.println(smmdoc.getLike());
+				SMMDocument smmdoc = VnExpressExtractor.extract(doc, false);
 				XMLWriter.writeToFile(smmdoc, "/home/quangle/crawled_data/vnexpress/test.xml");
-				
+				System.out.println("Done Crawl");
 			}
 		}
 		catch (Exception e){

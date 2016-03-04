@@ -117,6 +117,7 @@ public class VnExpressExtractor implements Extractor {
 		smmdoc.setCategory(category);
 		smmdoc.setTitle(title);
 		smmdoc.setContent(content);
+		smmdoc.setDate(date);
 
 		if (analysis) {
 			String fullcontent = title + "\n" + summary + "\n" + content;
