@@ -1,6 +1,7 @@
 package edu.vnu.uet.smm.crawler;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,7 +31,7 @@ public class XMLWriter {
 		parentElement.appendChild(childElement);
 	}
 	
-	public static void writeToFile(SMMDocument smmdoc, String path){
+	public static void writeToFile(ArrayList<SMMDocument> smmdocs, String path){
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -40,24 +41,26 @@ public class XMLWriter {
 			Element infoElement = doc.createElement("info");
 			doc.appendChild(infoElement);
 			
-			// News element
-			Element newsElement = doc.createElement("news");
-			infoElement.appendChild(newsElement);
-			
-			// Link in news
-			appendToElement(doc, newsElement, "link", smmdoc.getLink());
-			// Category in news
-			appendToElement(doc, newsElement, "category", smmdoc.getCategory());
-			// Date in news
-			appendToElement(doc, newsElement, "date", smmdoc.getDate());
-			// Update in news
-			appendToElement(doc, newsElement, "update", smmdoc.getLastUpdate()); // Cant invoke getLastUpdate() ????
-			// Title in news
-			appendToElement(doc, newsElement, "title", smmdoc.getTitle());
-			// Likes in news
-			appendToElement(doc, newsElement, "like", smmdoc.getLike());
-			// Content in news
-			appendToElement(doc, newsElement, "content", smmdoc.getContent());
+			for (SMMDocument smmdoc : smmdocs) {
+				// News element
+				Element newsElement = doc.createElement("news");
+				infoElement.appendChild(newsElement);
+				
+				// Link in news
+				appendToElement(doc, newsElement, "link", smmdoc.getLink());
+				// Category in news
+				appendToElement(doc, newsElement, "category", smmdoc.getCategory());
+				// Date in news
+				appendToElement(doc, newsElement, "date", smmdoc.getDate());
+				// Update in news
+				appendToElement(doc, newsElement, "update", smmdoc.getLastUpdate()); // Cant invoke getLastUpdate() ????
+				// Title in news
+				appendToElement(doc, newsElement, "title", smmdoc.getTitle());
+				// Likes in news
+				appendToElement(doc, newsElement, "like", smmdoc.getLike());
+				// Content in news
+				appendToElement(doc, newsElement, "content", smmdoc.getContent());
+			}
 			
 			// Write to file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();

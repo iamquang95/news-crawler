@@ -3,6 +3,7 @@ package edu.vnu.uet.smm.crawler;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 import org.jsoup.nodes.Document;
 
@@ -38,7 +39,9 @@ public class VnExpressCrawler {
 			Document doc = URLFetcher.fetchByJsoup(url, CRAWLER_TIMEOUT);
 			if (doc != null) {
 				SMMDocument smmdoc = VnExpressExtractor.extract(doc, false);
-				XMLWriter.writeToFile(smmdoc, "/home/quangle/crawled_data/vnexpress/test.xml");
+				ArrayList<SMMDocument> smmdocs = new ArrayList<SMMDocument>();
+				smmdocs.add(smmdoc);
+				XMLWriter.writeToFile(smmdocs, "/home/quangle/crawled_data/vnexpress/test.xml");
 				System.out.println("Done Crawl");
 			}
 		}
