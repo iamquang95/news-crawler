@@ -61,6 +61,22 @@ public class XMLWriter {
 				// Content in news
 				appendToElement(doc, newsElement, "content", smmdoc.getContent());
 				
+				ArrayList<SMMDocument> comments = smmdoc.getComments();
+				if (comments != null && comments.size() > 0) {
+					for (SMMDocument comment : comments) {
+						Element commentElement = doc.createElement("comment");
+						infoElement.appendChild(commentElement);
+						appendToElement(doc, commentElement, "link", comment.getLink());
+						appendToElement(doc, commentElement, "date", comment.getDate());
+						appendToElement(doc, commentElement, "update", smmdoc.getLastUpdate()); // Same crawled time
+						appendToElement(doc, commentElement, "user", comment.getAuthor());
+						appendToElement(doc, commentElement, "like", comment.getLike());
+						appendToElement(doc, commentElement, "quotation", comment.getQuotation());
+						appendToElement(doc, commentElement, "content", comment.getContent());
+
+					}
+				}
+				
 				// Write to file
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 				Transformer transformer = transformerFactory.newTransformer();
