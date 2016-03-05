@@ -1,6 +1,9 @@
 package edu.vnu.uet.smm.crawler.extractor;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,7 @@ import edu.vnu.uet.smm.nlp.vntextpro.VnTextProSingleton;
 import edu.vnu.uet.smm.nlp.vtools.vnpostagger.VnPOSTaggerSingleton;
 
 public class VnExpressExtractor implements Extractor {
+	
 	public static ArrayList<String> extractListDocOnePage(Document doc, String parentURL) {
 		ArrayList<String> listURL = new ArrayList<String>();
 		Elements elems = doc.select(".title_news > .txt_link");
@@ -182,6 +186,12 @@ public class VnExpressExtractor implements Extractor {
 				smmcomment.setCategory(smmdoc.getCategory());
 				smmcomment.setContent(text);
 				smmcomment.setAuthor(comment.get("full_name").getAsString());
+				
+				Date date = new Date(comment.get("creation_time").getAsLong() * 1000);
+				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+				smmcomment.setDate(dateFormat.format(date));
+				
+				smmcomment.setLike(comment.get("userlike").getAsString());
 
 				if (analysis) {
 					String contentWS = "";
