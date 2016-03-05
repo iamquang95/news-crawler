@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,22 @@ import edu.vnu.uet.smm.nlp.vntextpro.VnTextProSingleton;
 import edu.vnu.uet.smm.nlp.vtools.vnpostagger.VnPOSTaggerSingleton;
 
 public class VnExpressExtractor implements Extractor {
+	public static ArrayList<String> extractListDocOnePage(Document doc, String parentURL) {
+		ArrayList<String> listURL = new ArrayList<String>();
+		Elements elems = doc.select(".title_news > .txt_link");
+		Pattern pattern = Pattern.compile(parentURL);
+		if (elems.size() == 0)
+			return listURL;
+		for (Element elem : elems) {
+			String href = elem.attr("href");
+			Matcher matcher = pattern.matcher(href);
+			if (href != null && matcher.lookingAt()) {
+				listURL.add(elem.attr("href"));
+			}
+		}
+		return listURL;
+	}
+	
 	public static String extractTitle(Document doc) {
 		String title = "";
 		Elements elems = doc.select(".title_news > h1");
@@ -63,7 +80,7 @@ public class VnExpressExtractor implements Extractor {
 				return content;
 		}
 		for (Element elem : elems)
-			content += elem.text() + "\n";
+			content += elem.text() + "<br/>";
 		return content;
 	}
 
