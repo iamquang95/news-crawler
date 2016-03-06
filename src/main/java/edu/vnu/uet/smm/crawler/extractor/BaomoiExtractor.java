@@ -1,26 +1,26 @@
 package edu.vnu.uet.smm.crawler.extractor;
 
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import edu.vnu.uet.smm.common.base.SMMDocument;
-import edu.vnu.uet.smm.common.util.JodaTimeParser;
 import edu.vnu.uet.smm.common.util.RegexHelper;
 
 public class BaomoiExtractor implements Extractor {
-	
-	static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy.HH-mm-ss");
-	
+    
+    static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy.HH-mm-ss");
+    static DateFormat baomoiDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    static DateFormat indexerDateFormat = new SimpleDateFormat("d/M/yyyy | HH:mm");
+    static Calendar calendar = Calendar.getInstance();;
+    static final String[] dayOfWeek_VN = {"", "Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"};
+    
     public static String extractTitle(Document doc) {
         String title = "";
         Elements elems = doc.select("article.main-article header > h1");
@@ -105,19 +105,22 @@ public class BaomoiExtractor implements Extractor {
         smmdoc.setCategory(category);
         smmdoc.setTitle(title);
         smmdoc.setContent(content);
-        smmdoc.setDate(date);
-        Calendar cal = Calendar.getInstance();
-        smmdoc.setLastUpdate(dateFormat.format(cal.getTime()));
+        smmdoc.setDate(parseTime(date.substring(0, 16)));
+        // calendar = Calendar.getInstance();
+        smmdoc.setLastUpdate(dateFormat.format(calendar.getTime()));
         return smmdoc;
     }
 
-    public static String parseTime(String text) {
-        String time = JodaTimeParser.now();
-        Map<Pattern, String> regexs = new HashMap<Pattern, String>();
-        String[] rules = new String[] {
-                "([0-3]?\\d)/([0-1]?\\d)/(20\\d{2}) ([0-2]\\d):([0-5]\\d)	d-M-yyyy-HH-mm" };
-        RegexHelper.addRegexs(regexs, rules);
-        time = RegexHelper.timeParser(regexs, text);
-        return time;
+    public static String parseTime(String datetime) {
+        try{
+            // calendar = Calendar.getInstance();
+            Date date = baomoiDateFormat.parse(datetime);
+            calendar.setTime(date);
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            return dayOfWeek_VN[dayOfWeek] + ", " + indexerDateFormat.format(date) + " GMT+7";
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 }
