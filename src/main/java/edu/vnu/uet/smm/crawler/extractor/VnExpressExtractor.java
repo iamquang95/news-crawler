@@ -84,7 +84,7 @@ public class VnExpressExtractor implements Extractor {
 				return content;
 		}
 		for (Element elem : elems)
-			content += elem.text() + "<br/>";
+			content += elem.text() + "\n";
 		return content;
 	}
 
