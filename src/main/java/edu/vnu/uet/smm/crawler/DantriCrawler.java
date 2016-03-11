@@ -48,23 +48,23 @@ public class DantriCrawler {
 		String url = "http://dantri.com.vn/giao-duc-khuyen-hoc/";
 		String pathFolder = "/home/quangle/crawled_data/dantri/";
 		String pathSavedURL = "/home/quangle/crawled_data/dantri_crawled_url.txt";
-		int noPages = 100;
+		int noPages = 500;
 		int documentPerFile = 100;
+		int maxNoRefetchPage = 100;
+		int maxNoRefetchNews = 100;
 		//Crawl noPages first pages
 		ArrayList<SMMDocument> smmdocs = new ArrayList<SMMDocument>();
 		HashSet<String> visitedURLs = new HashSet<String>();
 		// Load crawled URL from file
-//		try {
-//			BufferedReader in = new BufferedReader(new FileReader(pathSavedURL));
-//			String savedURL;
-//			while ((savedURL = in.readLine()) != null)
-//				visitedURLs.add(savedURL);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(pathSavedURL));
+			String savedURL;
+			while ((savedURL = in.readLine()) != null)
+				visitedURLs.add(savedURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		int countDoc = 0;
-		int maxNoRefetchPage = 100;
-		int maxNoRefetchNews = 100;
 		int countError = 0;
 		//for(int i = 1; i <= noPages; ++i) {
 		for (int i = noPages; i >= 1; --i) {
@@ -76,6 +76,10 @@ public class DantriCrawler {
 				// Use this technique to avoid 
 				while (doc == null && countNoOfRefetchPage++ <= maxNoRefetchPage) {
 					doc = URLFetcher.fetchByJsoup(urlPage, CRAWLER_TIMEOUT);
+					if (countNoOfRefetchPage >= 80) {
+						Thread.sleep(5000);
+						System.out.println("Pausing crawler to avoid banning IP");
+					}
 				}
 				if (doc != null) {
 					ArrayList<String> smmdocsURL = DantriExtractor.extractListDocOnePage(doc, "");
@@ -85,6 +89,10 @@ public class DantriCrawler {
 							int countNoRefetchNews = 0;
 							while (newsDoc == null && countNoRefetchNews++ <= maxNoRefetchNews) {
 								newsDoc = URLFetcher.fetchByJsoup(docURL, CRAWLER_TIMEOUT);
+								if (countNoRefetchNews >= maxNoRefetchNews - 5){
+									Thread.sleep(5000);
+									System.out.println("Pausing crawler to avoid banning IP");
+								}
 							}
 							System.out.println(newsDoc.baseUri());
 							SMMDocument smmdoc = DantriExtractor.extract(newsDoc, IS_ANALYSIS);

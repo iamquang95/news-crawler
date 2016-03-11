@@ -48,7 +48,7 @@ public class VnExpressCrawler {
 		String url = "http://vnexpress.net/tin-tuc/giao-duc/";
 		String pathFolder = "/home/quangle/crawled_data/vnexpress/";
 		String pathSavedURL = "/home/quangle/crawled_data/crawled_url.txt";
-		int noPages = 2;
+		int noPages = 5;
 		int documentPerFile = 100;
 		//Crawl noPages first pages
 		ArrayList<SMMDocument> smmdocs = new ArrayList<SMMDocument>();
